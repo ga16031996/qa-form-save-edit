@@ -86,8 +86,9 @@
   const form = document.getElementById('qaForm');
 
   window.onload = () => {
-    document.getElementById("createDate").value = new Date().toISOString().split("T")[0];
-  };
+  // Set full date and time in local format
+  document.getElementById("createDate").value = new Date().toLocaleString();
+};
 
   form.addEventListener('submit', e => handleSubmit(e, "submit"));
   document.getElementById('saveBtn').addEventListener('click', e => handleSubmit(e, "save"));
