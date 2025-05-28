@@ -83,33 +83,39 @@
 
 <script>
   const scriptURL = 'https://script.google.com/macros/s/AKfycbylZD8BoXlufrjxxZoKaUidoWC7p5lGYSvE2653JVuojJZtU7NBlIPQWTnKFW7L2CwkyQ/exec';
-  const form = document.getElementById('qaForm');
 
-  window.onload = () => {
-  // Set full date and time in local format
-  document.getElementById("createDate").value = new Date().toLocaleString();
-};
+  document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('qaForm');
 
-  form.addEventListener('submit', e => handleSubmit(e, "submit"));
-  document.getElementById('saveBtn').addEventListener('click', e => handleSubmit(e, "save"));
+    // Set Create Date and Submission Time
+    const createDateField = document.getElementById("createDate");
+    if (createDateField) {
+      createDateField.value = new Date().toLocaleString();  // ✅ Full date + time
+    }
 
-  function handleSubmit(e, status) {
-    e.preventDefault();
-    document.getElementById("submissionTime").value = new Date().toLocaleString();
+    // Save and Submit
+    form.addEventListener('submit', e => handleSubmit(e, "submit"));
+    document.getElementById('saveBtn').addEventListener('click', e => handleSubmit(e, "save"));
 
-    const formData = new FormData(form);
-    formData.append("Form Status", status);
+    function handleSubmit(e, status) {
+      e.preventDefault();
+      document.getElementById("submissionTime").value = new Date().toLocaleString();
 
-    fetch(scriptURL, { method: 'POST', body: formData })
-      .then(res => res.text())
-      .then(id => {
-        document.getElementById('submissionId').value = id;
-        document.getElementById('submissionIdDisplay').innerText = `Submission ID: ${id}`;
-        document.getElementById('submissionIdDisplay').style.display = 'block';
-        alert(`${status === 'save' ? 'Saved' : 'Submitted'} successfully!`);
-      })
-      .catch(err => alert("Error submitting form: " + err));
-  }
+      const formData = new FormData(form);
+      formData.append("Form Status", status);
+
+      fetch(scriptURL, { method: 'POST', body: formData })
+        .then(res => res.text())
+        .then(id => {
+          document.getElementById('submissionId').value = id;
+          document.getElementById('submissionIdDisplay').innerText = `Submission ID: ${id}`;
+          document.getElementById('submissionIdDisplay').style.display = 'block';
+          alert(`${status === 'save' ? 'Saved' : 'Submitted'} successfully!`);
+        })
+        .catch(err => alert("Error submitting form: " + err));
+    }
+  });
 </script>
+
 </body>
 </html>
