@@ -99,10 +99,7 @@
 
     function handleSubmit(e, status) {
       e.preventDefault();
-      const pst = getUSTimeString("America/Los_Angeles");
-      const est = getUSTimeString("America/New_York");
-      const cst = getUSTimeString("America/Chicago");
-      document.getElementById("submissionTime").value = `PST: ${pst}, EST: ${est}, CST: ${cst}`;
+      document.getElementById("submissionTime").value = getUSTimeString("America/Los_Angeles");
 
       const formData = new FormData(form);
       formData.append("Form Status", status);
