@@ -121,56 +121,62 @@
 
     // Fetch existing entry based on Submission ID
     document.getElementById('fetchDataBtn').addEventListener('click', () => {
-      const submissionId = document.getElementById('searchResponseId').value.trim();
-      if (!submissionId) {
-        alert('Please enter a Submission ID.');
-        return;
-      }
-
-     Object.keys(data.entry).forEach(key => {
-  const field = document.querySelector(`[name="${key}"]`);
-  if (field) {
-    if (field.type === 'checkbox') {
-      field.checked = data.entry[key] === 'TRUE';
-    } else if (field.type === 'date' && key === "Campaign Date") {
-      const dateVal = new Date(data.entry[key]);
-      if (!isNaN(dateVal)) {
-        field.value = dateVal.toISOString().split("T")[0]; // Format: YYYY-MM-DD
-      }
-    } else if (field.type === 'time' && key === "Campaign Time") {
-      const timeStr = data.entry[key];
-      if (timeStr && (timeStr.includes("AM") || timeStr.includes("PM"))) {
-        const parsedTime = convertTo24Hr(timeStr);
-        if (parsedTime) {
-          field.value = parsedTime;
-        }
-      } else {
-        field.value = timeStr;
-      }
-    } else {
-      field.value = data.entry[key];
-    }
+  const submissionId = document.getElementById('searchResponseId').value.trim();
+  if (!submissionId) {
+    alert('Please enter a Submission ID.');
+    return;
   }
-});
-// Helper to convert 12-hour AM/PM time to 24-hour format
-function convertTo24Hr(time12h) {
-  const [time, modifier] = time12h.trim().split(' ');
-  if (!time || !modifier) return null;
-  let [hours, minutes] = time.split(':');
-  if (!minutes) minutes = "00";
-  if (hours === '12') hours = '00';
-  if (modifier.toUpperCase() === 'PM') hours = parseInt(hours, 10) + 12;
-  return `${hours.toString().padStart(2, '0')}:${minutes}`;
-}
-            document.getElementById('submissionIdDisplay').innerText = `Editing Submission ID: ${submissionId}`;
-            document.getElementById('submissionIdDisplay').style.display = 'block';
-            document.getElementById('submissionId').value = submissionId;
-          } else {
-            alert(`No entry found for Submission ID: ${submissionId}`);
+
+  fetch(`${scriptURL}?action=get&id=${submissionId}`)
+    .then(response => response.json())
+    .then(data => {
+      if (data.status === 'success') {
+        Object.keys(data.entry).forEach(key => {
+          const field = document.querySelector(`[name="${key}"]`);
+          if (field) {
+            if (field.type === 'checkbox') {
+              field.checked = data.entry[key] === 'TRUE';
+            } else if (field.type === 'date' && key === "Campaign Date") {
+              const dateVal = new Date(data.entry[key]);
+              if (!isNaN(dateVal)) {
+                field.value = dateVal.toISOString().split("T")[0]; // Format: YYYY-MM-DD
+              }
+            } else if (field.type === 'time' && key === "Campaign Time") {
+              const timeStr = data.entry[key];
+              if (timeStr && (timeStr.includes("AM") || timeStr.includes("PM"))) {
+                const parsedTime = convertTo24Hr(timeStr);
+                if (parsedTime) {
+                  field.value = parsedTime;
+                }
+              } else {
+                field.value = timeStr;
+              }
+            } else {
+              field.value = data.entry[key];
+            }
           }
-        })
-        .catch(err => alert("Failed to fetch data: " + err));
-    });
+        });
+
+        // Helper to convert 12-hour AM/PM time to 24-hour format
+        function convertTo24Hr(time12h) {
+          const [time, modifier] = time12h.trim().split(' ');
+          if (!time || !modifier) return null;
+          let [hours, minutes] = time.split(':');
+          if (!minutes) minutes = "00";
+          if (hours === '12') hours = '00';
+          if (modifier.toUpperCase() === 'PM') hours = parseInt(hours, 10) + 12;
+          return `${hours.toString().padStart(2, '0')}:${minutes}`;
+        }
+
+        document.getElementById('submissionIdDisplay').innerText = `Editing Submission ID: ${submissionId}`;
+        document.getElementById('submissionIdDisplay').style.display = 'block';
+        document.getElementById('submissionId').value = submissionId;
+      } else {
+        alert(`No entry found for Submission ID: ${submissionId}`);
+      }
+    })
+    .catch(err => alert("Failed to fetch data: " + err));
+});
   });
 </script>
 
