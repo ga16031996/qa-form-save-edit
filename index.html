@@ -86,7 +86,7 @@
 
 
 <script>
-  const scriptURL = 'https://script.google.com/macros/s/AKfycbylZD8BoXlufrjxxZoKaUidoWC7p5lGYSvE2653JVuojJZtU7NBlIPQWTnKFW7L2CwkyQ/exec';
+  const scriptURL = 'https://script.google.com/macros/s/AKfycbzXMPx9f0xXi0RUkLqgrcCHG-e1ubUNnfIVEQ6BsIDg9a2dvIzTex1EnAfVghlsZjCcFA/exec';
 
   document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('qaForm');
@@ -127,21 +127,41 @@
         return;
       }
 
-      fetch(`${scriptURL}?action=get&id=${submissionId}`)
-        .then(response => response.json())
-        .then(data => {
-          if (data.status === 'success') {
-            // Fill the form fields with retrieved data
-            Object.keys(data.entry).forEach(key => {
-              const field = document.querySelector(`[name="${key}"]`);
-              if (field) {
-                if (field.type === 'checkbox') {
-                  field.checked = data.entry[key] === 'TRUE';
-                } else {
-                  field.value = data.entry[key];
-                }
-              }
-            });
+     Object.keys(data.entry).forEach(key => {
+  const field = document.querySelector(`[name="${key}"]`);
+  if (field) {
+    if (field.type === 'checkbox') {
+      field.checked = data.entry[key] === 'TRUE';
+    } else if (field.type === 'date' && key === "Campaign Date") {
+      const dateVal = new Date(data.entry[key]);
+      if (!isNaN(dateVal)) {
+        field.value = dateVal.toISOString().split("T")[0]; // Format: YYYY-MM-DD
+      }
+    } else if (field.type === 'time' && key === "Campaign Time") {
+      const timeStr = data.entry[key];
+      if (timeStr && (timeStr.includes("AM") || timeStr.includes("PM"))) {
+        const parsedTime = convertTo24Hr(timeStr);
+        if (parsedTime) {
+          field.value = parsedTime;
+        }
+      } else {
+        field.value = timeStr;
+      }
+    } else {
+      field.value = data.entry[key];
+    }
+  }
+});
+// Helper to convert 12-hour AM/PM time to 24-hour format
+function convertTo24Hr(time12h) {
+  const [time, modifier] = time12h.trim().split(' ');
+  if (!time || !modifier) return null;
+  let [hours, minutes] = time.split(':');
+  if (!minutes) minutes = "00";
+  if (hours === '12') hours = '00';
+  if (modifier.toUpperCase() === 'PM') hours = parseInt(hours, 10) + 12;
+  return `${hours.toString().padStart(2, '0')}:${minutes}`;
+}
             document.getElementById('submissionIdDisplay').innerText = `Editing Submission ID: ${submissionId}`;
             document.getElementById('submissionIdDisplay').style.display = 'block';
             document.getElementById('submissionId').value = submissionId;
