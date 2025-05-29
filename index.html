@@ -87,36 +87,94 @@
   </form>
 
   <script>
-    // Handle form submission
-    document.getElementById('qaForm').addEventListener('submit', function(e) {
+  const scriptURL = 'https://script.google.com/macros/s/AKfycbylZD8BoXlufrjxxZoKaUidoWC7p5lGYSvE2653JVuojJZtU7NBlIPQWTnKFW7L2CwkyQ/exec';
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('qaForm');
+
+    // Set Create Date and Submission Time (Default to CST)
+    const createDateField = document.getElementById("createDate");
+    const submissionTimeField = document.getElementById("submissionTime");
+
+    const setCSTDate = () => {
+      const cstDate = new Date().toLocaleString("en-US", { timeZone: "America/Chicago" });
+      createDateField.value = cstDate; // Set Create Date to CST
+      submissionTimeField.value = cstDate; // Set Submission Date to CST
+    }
+
+    setCSTDate(); // Set the default date and time in CST when the page loads
+
+    // Save and Submit
+    form.addEventListener('submit', e => handleSubmit(e, "submit"));
+    document.getElementById('saveBtn').addEventListener('click', e => handleSubmit(e, "save"));
+
+    // Handle form submit (either Save or Submit)
+    function handleSubmit(e, status) {
       e.preventDefault();
-
-      // Get current CST time for Create Date and Submission Time
-      const cstTime = new Date().toLocaleString("en-US", { timeZone: "America/Chicago" });
-
-      // Set the default times
-      document.getElementById('createDate').value = cstTime;
-      document.getElementById('submissionTime').value = cstTime;
-
-      // Handle Campaign Time with Time Zone
-      const campaignTime = document.getElementById('campaignTime').value;
+      
+      // Set the current time for submission time, adjusting to the selected campaign time zone
+      const campaignTimeField = document.getElementById('campaignTime');
       const campaignTimeZone = document.getElementById('campaignTimeZone').value;
-      document.getElementById('submissionId').value = Date.now(); // You can use UUID generation as an alternative.
+      const campaignTime = convertToTimeZone(campaignTimeField.value, campaignTimeZone);
 
-      // Send data to Google Apps Script
-      const formData = new FormData(document.getElementById('qaForm'));
-      fetch('<YOUR_GOOGLE_SCRIPT_WEB_APP_URL>', {
-        method: 'POST',
-        body: formData
-      })
-      .then(response => response.text())
-      .then(submissionId => {
-        // Display Submission ID
-        document.getElementById('submissionIdValue').textContent = submissionId;
-        document.getElementById('submissionIdDisplay').style.display = 'block';
-      })
-      .catch(error => alert('Error submitting form: ' + error));
+      document.getElementById("submissionTime").value = new Date().toLocaleString("en-US", { timeZone: "America/Chicago" });
+
+      const formData = new FormData(form);
+      formData.append("Form Status", status);
+      formData.append("Campaign Time", `${campaignTime} ${campaignTimeZone}`);  // Append campaign time with time zone
+
+      fetch(scriptURL, { method: 'POST', body: formData })
+        .then(res => res.text())
+        .then(id => {
+          document.getElementById('submissionId').value = id;
+          document.getElementById('submissionIdDisplay').innerText = `Submission ID: ${id}`;
+          document.getElementById('submissionIdDisplay').style.display = 'block';
+          alert(`${status === 'save' ? 'Saved' : 'Submitted'} successfully!`);
+        })
+        .catch(err => alert("Error submitting form: " + err));
+    }
+
+    // Fetch existing entry based on Submission ID
+    document.getElementById('fetchDataBtn').addEventListener('click', () => {
+      const submissionId = document.getElementById('searchResponseId').value.trim();
+      if (!submissionId) {
+        alert('Please enter a Submission ID.');
+        return;
+      }
+
+      fetch(`${scriptURL}?action=get&id=${submissionId}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === 'success') {
+            // Fill the form fields with retrieved data
+            Object.keys(data.entry).forEach(key => {
+              const field = document.querySelector(`[name="${key}"]`);
+              if (field) {
+                if (field.type === 'checkbox') {
+                  field.checked = data.entry[key] === 'TRUE';
+                } else {
+                  field.value = data.entry[key];
+                }
+              }
+            });
+            document.getElementById('submissionIdDisplay').innerText = `Editing Submission ID: ${submissionId}`;
+            document.getElementById('submissionIdDisplay').style.display = 'block';
+            document.getElementById('submissionId').value = submissionId;
+          } else {
+            alert(`No entry found for Submission ID: ${submissionId}`);
+          }
+        })
+        .catch(err => alert("Failed to fetch data: " + err));
     });
-  </script>
+
+    // Time Zone Conversion Helper
+    function convertToTimeZone(dateStr, timeZone) {
+      const date = new Date(dateStr);
+      const options = { timeZone: timeZone, hour12: true };
+      return date.toLocaleString("en-US", options); // Convert to the selected time zone
+    }
+
+  });
+</script>
 </body>
 </html>
