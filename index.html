@@ -47,19 +47,7 @@
     <div class="form-group"><label for="segment">Segment</label><input type="text" id="segment" name="Segment"></div>
     <div class="form-group"><label for="count">Count (After Suppression)</label><input type="text" id="count" name="Count (After Suppression)"></div>
     <div class="form-group"><label for="campaignDate">Campaign Date</label><input type="date" id="campaignDate" name="Campaign Date"></div>
-    <div class="form-group">
-      <label for="campaignTime">Campaign Time</label>
-      <input type="time" id="campaignTime" name="Campaign Time" required>
-    </div>
-    <div class="form-group">
-      <label for="campaignTimeZone">Campaign Time Zone</label>
-      <select id="campaignTimeZone" name="Campaign Time Zone" required>
-        <option value="America/Los_Angeles">PST</option>
-        <option value="America/Denver">MST</option>
-        <option value="America/Chicago">CST</option>
-        <option value="America/New_York">EST</option>
-      </select>
-    </div>
+    <div class="form-group"><label for="campaignTime">Campaign Time</label><input type="time" id="campaignTime" name="Campaign Time"></div>
     <div class="form-group"><label for="testEmail">Test Email List/Person</label><input type="text" id="testEmail" name="Test Email List/Person"></div>
 
     <!-- QA Checks as Dropdowns -->
@@ -76,52 +64,48 @@
     <div class="form-group"><label for="utm">UTM Tracking?</label><select id="utm" name="UTM Tracking?"><option>Yes</option><option>No</option></select></div>
     <div class="form-group"><label for="liveLink">Live Campaign Link</label><input type="text" id="liveLink" name="Live Campaign Link"></div>
     <div class="form-group"><label for="eoa">EOA</label><input type="text" id="eoa" name="EOA"></div>
-    <div class="form-group"><label for="rendering">Any Rendering Issues - Device Name + Platform</label><input type="text" id="rendering" name="Any Rendering Issues - Device Name + Platform"></div>
+    <div class="form-group"><label for="renderingIssues">Any Rendering Issues</label><textarea id="renderingIssues" name="Any Rendering Issues - Device Name + Platform"></textarea></div>
+    <div class="form-group"><label for="approval">Campaign Approval</label><select id="approval" name="Campaign Approval"><option value=\"\">-- Select --</option><option>Pending</option><option>Approved</option></select></div>
+    <div class="form-group"><label for="links">LINKS (Title + Link)</label><textarea id="links" name="LINKS"></textarea></div>
 
-    <div class="form-group"><label for="approval">Campaign Approval</label><select id="approval" name="Campaign Approval"><option>Approved</option><option>Not Approved</option></select></div>
-
-    <!-- Submit and Reset -->
+    <!-- Buttons -->
+    <button type="button" id="saveBtn">Save</button>
     <button type="submit">Submit</button>
-    <button type="reset">Reset</button>
-    <div id="submissionIdDisplay">Your Submission ID: <span id="submissionIdValue"></span></div>
+    <p id="submissionIdDisplay"></p>
   </form>
 
-  <script>
+  <!-- Fetch/Edit -->
+  <form id="editForm" style="max-width: 900px; margin: auto;">
+    <div class="form-group">
+      <label for="searchResponseId">Enter Submission ID to Edit</label><br>
+      <input type="text" id="searchResponseId" /><br><br>
+      <button type="button" id="fetchDataBtn">Fetch Data</button>
+    </div>
+  </form>
+
+<script>
   const scriptURL = 'https://script.google.com/macros/s/AKfycbylZD8BoXlufrjxxZoKaUidoWC7p5lGYSvE2653JVuojJZtU7NBlIPQWTnKFW7L2CwkyQ/exec';
+
+  function getUSTimeString(timeZone) {
+    return new Date().toLocaleString("en-US", { timeZone: timeZone, hour12: true });
+  }
 
   document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('qaForm');
+    document.getElementById("createDate").value = getUSTimeString("America/Los_Angeles");
 
-    // Set Create Date and Submission Time (Default to CST)
-    const createDateField = document.getElementById("createDate");
-    const submissionTimeField = document.getElementById("submissionTime");
-
-    const setCSTDate = () => {
-      const cstDate = new Date().toLocaleString("en-US", { timeZone: "America/Chicago" });
-      createDateField.value = cstDate; // Set Create Date to CST
-      submissionTimeField.value = cstDate; // Set Submission Date to CST
-    }
-
-    setCSTDate(); // Set the default date and time in CST when the page loads
-
-    // Save and Submit
     form.addEventListener('submit', e => handleSubmit(e, "submit"));
     document.getElementById('saveBtn').addEventListener('click', e => handleSubmit(e, "save"));
 
-    // Handle form submit (either Save or Submit)
     function handleSubmit(e, status) {
       e.preventDefault();
-      
-      // Set the current time for submission time, adjusting to the selected campaign time zone
-      const campaignTimeField = document.getElementById('campaignTime');
-      const campaignTimeZone = document.getElementById('campaignTimeZone').value;
-      const campaignTime = convertToTimeZone(campaignTimeField.value, campaignTimeZone);
-
-      document.getElementById("submissionTime").value = new Date().toLocaleString("en-US", { timeZone: "America/Chicago" });
+      const pst = getUSTimeString("America/Los_Angeles");
+      const est = getUSTimeString("America/New_York");
+      const cst = getUSTimeString("America/Chicago");
+      document.getElementById("submissionTime").value = `PST: ${pst}, EST: ${est}, CST: ${cst}`;
 
       const formData = new FormData(form);
       formData.append("Form Status", status);
-      formData.append("Campaign Time", `${campaignTime} ${campaignTimeZone}`);  // Append campaign time with time zone
 
       fetch(scriptURL, { method: 'POST', body: formData })
         .then(res => res.text())
@@ -134,46 +118,27 @@
         .catch(err => alert("Error submitting form: " + err));
     }
 
-    // Fetch existing entry based on Submission ID
     document.getElementById('fetchDataBtn').addEventListener('click', () => {
-      const submissionId = document.getElementById('searchResponseId').value.trim();
-      if (!submissionId) {
-        alert('Please enter a Submission ID.');
-        return;
-      }
+      const id = document.getElementById('searchResponseId').value.trim();
+      if (!id) return alert('Enter a Submission ID.');
 
-      fetch(`${scriptURL}?action=get&id=${submissionId}`)
-        .then(response => response.json())
+      fetch(`${scriptURL}?action=get&id=${id}`)
+        .then(res => res.json())
         .then(data => {
           if (data.status === 'success') {
-            // Fill the form fields with retrieved data
             Object.keys(data.entry).forEach(key => {
               const field = document.querySelector(`[name="${key}"]`);
-              if (field) {
-                if (field.type === 'checkbox') {
-                  field.checked = data.entry[key] === 'TRUE';
-                } else {
-                  field.value = data.entry[key];
-                }
-              }
+              if (field) field.value = data.entry[key];
             });
-            document.getElementById('submissionIdDisplay').innerText = `Editing Submission ID: ${submissionId}`;
+            document.getElementById('submissionIdDisplay').innerText = `Editing Submission ID: ${id}`;
             document.getElementById('submissionIdDisplay').style.display = 'block';
-            document.getElementById('submissionId').value = submissionId;
+            document.getElementById('submissionId').value = id;
           } else {
-            alert(`No entry found for Submission ID: ${submissionId}`);
+            alert(`No entry found for Submission ID: ${id}`);
           }
         })
         .catch(err => alert("Failed to fetch data: " + err));
     });
-
-    // Time Zone Conversion Helper
-    function convertToTimeZone(dateStr, timeZone) {
-      const date = new Date(dateStr);
-      const options = { timeZone: timeZone, hour12: true };
-      return date.toLocaleString("en-US", options); // Convert to the selected time zone
-    }
-
   });
 </script>
 </body>
