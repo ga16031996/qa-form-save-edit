@@ -50,18 +50,23 @@
 
     <!-- Combined Campaign Time and Time Zone -->
     <div class="form-group">
-      <label for="campaignTime">Campaign Time</label>
-      <div style="display: flex; gap: 10px;">
-        <input type="time" id="campaignTime" name="Campaign Time" />
-        <select id="campaignTimeZone" name="Campaign Time Zone">
-          <option value="">-- Time Zone --</option>
-          <option value="PST">PST</option>
-          <option value="MST">MST</option>
-          <option value="CST">CST</option>
-          <option value="EST">EST</option>
-        </select>
-      </div>
-    </div>
+  <label for="campaignTime">Campaign Time</label>
+  <div style="display: flex; gap: 10px;">
+    <input type="time" id="campaignTime" name="Campaign Time" />
+    <select id="campaignAmPm">
+      <option value="">-- AM/PM --</option>
+      <option value="AM">AM</option>
+      <option value="PM">PM</option>
+    </select>
+    <select id="campaignTimeZone" name="Campaign Time Zone">
+      <option value="">-- Time Zone --</option>
+      <option value="PST">PST</option>
+      <option value="MST">MST</option>
+      <option value="CST">CST</option>
+      <option value="EST">EST</option>
+    </select>
+  </div>
+</div>
 
     <div class="form-group"><label for="testEmail">Test Email List/Person</label><input type="text" id="testEmail" name="Test Email List/Person"></div>
 
@@ -80,6 +85,8 @@
     <div class="form-group"><label for="liveLink">Live Campaign Link</label><input type="text" id="liveLink" name="Live Campaign Link"></div>
     <div class="form-group"><label for="eoa">EOA</label><input type="text" id="eoa" name="EOA"></div>
     <div class="form-group"><label for="rendering">Any Rendering Issues - Device Name + Platform</label><input type="text" id="rendering" name="Any Rendering Issues - Device Name + Platform"></div>
+	    <div class="form-group"><label for="links">LINKS (Title + Link)</label><textarea id="links" name="LINKS"></textarea></div>
+
 
     <!-- Campaign Approval -->
     <div class="form-group"><label for="campaignApproval">Campaign Approval</label><select id="campaignApproval" name="Campaign Approval"><option>Approved</option><option>Not Approved</option></select></div>
@@ -114,23 +121,26 @@
     document.getElementById("createDate").value = getUSTimeString("America/Chicago");
 
     form.addEventListener('submit', e => handleSubmit(e, "submit"));
-    document.getElementById('saveBtn').addEventListener('click', e => handleSubmit(e, "save"));
-
+    
     function handleSubmit(e, status) {
       e.preventDefault();
 
       // Set submissionTime to CST timezone
       document.getElementById("submissionTime").value = getUSTimeString("America/Chicago");
 
-      // Combine Campaign Time and Time Zone into a single field
-      const campaignTime = document.getElementById('campaignTime').value;
-      const campaignTimeZone = document.getElementById('campaignTimeZone').value;
-      const campaignDateTime = (campaignTime && campaignTimeZone) ? `${campaignTime} ${campaignTimeZone}` : '';
+    const campaignTime = document.getElementById('campaignTime').value;
+const campaignAmPm = document.getElementById('campaignAmPm').value;
+const campaignTimeZone = document.getElementById('campaignTimeZone').value;
 
-      // Add the combined Campaign Date and Time
-      const formData = new FormData(form);
-      formData.append("Form Status", status);
-      formData.set("Campaign Date and Time", campaignDateTime);
+let formattedTime = '';
+if (campaignTime && campaignAmPm && campaignTimeZone) {
+  const [hour, minute] = campaignTime.split(':');
+  let hour12 = parseInt(hour, 10);
+  if (campaignAmPm === 'PM' && hour12 < 12) hour12 += 12;
+  if (campaignAmPm === 'AM' && hour12 === 12) hour12 = 0;
+  formattedTime = `${String(hour12).padStart(2, '0')}:${minute} ${campaignAmPm} ${campaignTimeZone}`;
+}
+const campaignDateTime = formattedTime;
 
       fetch(scriptURL, { method: 'POST', body: formData })
         .then(res => res.text())
@@ -165,7 +175,7 @@
         .catch(err => alert("Failed to fetch data: " + err));
     });
   });
-</script>
+  </script>
 
 </body>
 </html>
