@@ -86,15 +86,30 @@
 
 
 <script>
-  const scriptURL = 'https://script.google.com/macros/s/AKfycbzXMPx9f0xXi0RUkLqgrcCHG-e1ubUNnfIVEQ6BsIDg9a2dvIzTex1EnAfVghlsZjCcFA/exec';
+  const scriptURL = 'https://script.google.com/macros/s/AKfycbyvOW-4C5GyShDchfDuog1WQ68JHOa9DhMjsDeBLORlGD19i3jH7uOms9PlalViGro44A/exec';
 
   document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('qaForm');
 
-    // Set Create Date and Submission Time
+    // Set Create Date and Submission Time with specific formatting (CST)
     const createDateField = document.getElementById("createDate");
+    const submissionTimeField = document.getElementById("submissionTime");
+
+    const options = {
+      timeZone: 'America/Chicago',  // CST (Central Standard Time)
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: true
+    };
+
+    const currentDate = new Date();
+
     if (createDateField) {
-      createDateField.value = new Date().toLocaleString();  // ✅ Full date + time
+      createDateField.value = currentDate.toLocaleString('en-US', options);  // Set Create Date in CST
     }
 
     // Save and Submit
@@ -103,7 +118,11 @@
 
     function handleSubmit(e, status) {
       e.preventDefault();
-      document.getElementById("submissionTime").value = new Date().toLocaleString();
+
+      // Set Submission Time in CST (same format as Create Date)
+      if (submissionTimeField) {
+        submissionTimeField.value = currentDate.toLocaleString('en-US', options);
+      }
 
       const formData = new FormData(form);
       formData.append("Form Status", status);
@@ -121,64 +140,65 @@
 
     // Fetch existing entry based on Submission ID
     document.getElementById('fetchDataBtn').addEventListener('click', () => {
-  const submissionId = document.getElementById('searchResponseId').value.trim();
-  if (!submissionId) {
-    alert('Please enter a Submission ID.');
-    return;
-  }
-
-  fetch(`${scriptURL}?action=get&id=${submissionId}`)
-    .then(response => response.json())
-    .then(data => {
-      if (data.status === 'success') {
-        Object.keys(data.entry).forEach(key => {
-          const field = document.querySelector(`[name="${key}"]`);
-          if (field) {
-            if (field.type === 'checkbox') {
-              field.checked = data.entry[key] === 'TRUE';
-            } else if (field.type === 'date' && key === "Campaign Date") {
-              const dateVal = new Date(data.entry[key]);
-              if (!isNaN(dateVal)) {
-                field.value = dateVal.toISOString().split("T")[0]; // Format: YYYY-MM-DD
-              }
-            } else if (field.type === 'time' && key === "Campaign Time") {
-              const timeStr = data.entry[key];
-              if (timeStr && (timeStr.includes("AM") || timeStr.includes("PM"))) {
-                const parsedTime = convertTo24Hr(timeStr);
-                if (parsedTime) {
-                  field.value = parsedTime;
-                }
-              } else {
-                field.value = timeStr;
-              }
-            } else {
-              field.value = data.entry[key];
-            }
-          }
-        });
-
-        // Helper to convert 12-hour AM/PM time to 24-hour format
-        function convertTo24Hr(time12h) {
-          const [time, modifier] = time12h.trim().split(' ');
-          if (!time || !modifier) return null;
-          let [hours, minutes] = time.split(':');
-          if (!minutes) minutes = "00";
-          if (hours === '12') hours = '00';
-          if (modifier.toUpperCase() === 'PM') hours = parseInt(hours, 10) + 12;
-          return `${hours.toString().padStart(2, '0')}:${minutes}`;
-        }
-
-        document.getElementById('submissionIdDisplay').innerText = `Editing Submission ID: ${submissionId}`;
-        document.getElementById('submissionIdDisplay').style.display = 'block';
-        document.getElementById('submissionId').value = submissionId;
-      } else {
-        alert(`No entry found for Submission ID: ${submissionId}`);
+      const submissionId = document.getElementById('searchResponseId').value.trim();
+      if (!submissionId) {
+        alert('Please enter a Submission ID.');
+        return;
       }
-    })
-    .catch(err => alert("Failed to fetch data: " + err));
-});
+
+      fetch(`${scriptURL}?action=get&id=${submissionId}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === 'success') {
+            Object.keys(data.entry).forEach(key => {
+              const field = document.querySelector(`[name="${key}"]`);
+              if (field) {
+                if (field.type === 'checkbox') {
+                  field.checked = data.entry[key] === 'TRUE';
+                } else if (field.type === 'date' && key === "Campaign Date") {
+                  const dateVal = new Date(data.entry[key]);
+                  if (!isNaN(dateVal)) {
+                    field.value = dateVal.toISOString().split("T")[0]; // Format: YYYY-MM-DD
+                  }
+                } else if (field.type === 'time' && key === "Campaign Time") {
+                  const timeStr = data.entry[key];
+                  if (timeStr && (timeStr.includes("AM") || timeStr.includes("PM"))) {
+                    const parsedTime = convertTo24Hr(timeStr);
+                    if (parsedTime) {
+                      field.value = parsedTime;
+                    }
+                  } else {
+                    field.value = timeStr;
+                  }
+                } else {
+                  field.value = data.entry[key];
+                }
+              }
+            });
+
+            // Helper to convert 12-hour AM/PM time to 24-hour format
+            function convertTo24Hr(time12h) {
+              const [time, modifier] = time12h.trim().split(' ');
+              if (!time || !modifier) return null;
+              let [hours, minutes] = time.split(':');
+              if (!minutes) minutes = "00";
+              if (hours === '12') hours = '00';
+              if (modifier.toUpperCase() === 'PM') hours = parseInt(hours, 10) + 12;
+              return `${hours.toString().padStart(2, '0')}:${minutes}`;
+            }
+
+            document.getElementById('submissionIdDisplay').innerText = `Editing Submission ID: ${submissionId}`;
+            document.getElementById('submissionIdDisplay').style.display = 'block';
+            document.getElementById('submissionId').value = submissionId;
+          } else {
+            alert(`No entry found for Submission ID: ${submissionId}`);
+          }
+        })
+        .catch(err => alert("Failed to fetch data: " + err));
+    });
   });
 </script>
+
 
 
 
