@@ -31,154 +31,92 @@
     <!-- Main Fields -->
     <div class="form-group"><label for="filledBy">Form Filled By</label><input type="text" id="filledBy" name="Form Filled By" required></div>
     <div class="form-group"><label for="clientName">Client Name</label><input type="text" id="clientName" name="Client Name" required></div>
-<div class="form-group"><label for="campaignType">Campaign Type</label><select id="campaignType" name="Campaign Type"><option value="">-- Select Campaign Type --</option><option value="Manual Campaigns">Manual Campaigns</option><option value="SMS">SMS</option><option value="Automation emails">Automation emails</option></select></div><br>
-<div class="form-group"><label for="jobType">Job Type</label><select id="jobType" name="Job Type"><option value="">-- Select Job Type --</option><option value="Design only">Design only</option><option value="Design + Coding">Design + Coding</option><option value="Coding only">Coding only</option></select></div>
-    <div class="form-group"><label for="noOfEmails">No of Emails</label><input type="number" id="noOfEmails" name="No of Emails" /></div>
-    <div class="form-group"><label for="emailName">Email/SMS/Automation Name</label><input type="text" id="emailName" name="Email/SMS/Automation Name" /></div>
-    <div class="form-group"><label for="esp">ESP</label><input type="text" id="esp" name="ESP" /></div>
-    <div class="form-group"><label for="fromName">From Name</label><input type="text" id="fromName" name="From Name" /></div>
-    <div class="form-group"><label for="fromEmail">From Email Address</label><input type="email" id="fromEmail" name="From Email Address" /></div>
-    <div class="form-group"><label for="replyToEmail">Reply-to Email Address</label><input type="email" id="replyToEmail" name="Reply-to Email Address" /></div>
-    <div class="form-group"><label for="subjectLine">Subject Line</label><input type="text" id="subjectLine" name="Subject Line" /></div>
-    <div class="form-group"><label for="previewText">Preview Text</label><input type="text" id="previewText" name="Preview Text" /></div>
-<div class="form-group"><label for="abTest">A/B Testing</label><select id="abTest" name="A/B Testing"><option value="">-- Select A/B Testing Type --</option><option value="Subject line A/B testing">Subject line A/B testing</option><option value="Time">Time</option><option value="Content">Content</option><option value="Design changes / Layout changes">Design changes / Layout changes</option><option value="Other">Other</option><option value="No">No</option></select></div>
+    <div class="form-group"><label for="campaignType">Campaign Type</label><select id="campaignType" name="Campaign Type"><option value="">-- Select --</option><option>Manual Campaigns</option><option>SMS</option><option>Automation emails</option></select></div>
+    <div class="form-group"><label for="jobType">Job Type</label><select id="jobType" name="Job Type"><option value="">-- Select --</option><option>Design only</option><option>Design + Coding</option><option>Coding only</option></select></div>
+    <div class="form-group"><label for="noOfEmails">No of Emails</label><input type="number" id="noOfEmails" name="No of Emails"></div>
+    <div class="form-group"><label for="emailName">Email/SMS/Automation Name</label><input type="text" id="emailName" name="Email/SMS/Automation Name"></div>
+    <div class="form-group"><label for="esp">ESP</label><input type="text" id="esp" name="ESP"></div>
+    <div class="form-group"><label for="fromName">From Name</label><input type="text" id="fromName" name="From Name"></div>
+    <div class="form-group"><label for="fromEmail">From Email Address</label><input type="email" id="fromEmail" name="From Email Address"></div>
+    <div class="form-group"><label for="replyToEmail">Reply-to Email Address</label><input type="email" id="replyToEmail" name="Reply-to Email Address"></div>
+    <div class="form-group"><label for="subjectLine">Subject Line</label><input type="text" id="subjectLine" name="Subject Line"></div>
+    <div class="form-group"><label for="previewText">Preview Text</label><input type="text" id="previewText" name="Preview Text"></div>
+    <div class="form-group"><label for="abTest">A/B Testing</label><select id="abTest" name="A/B Testing"><option value="">-- Select --</option><option>Subject line A/B testing</option><option>Time</option><option>Content</option><option>Design changes / Layout changes</option><option>Other</option><option>No</option></select></div>
     <div class="form-group"><label for="abDetails">A/B Test Details</label><textarea id="abDetails" name="A/B Test Details"></textarea></div>
-    <div class="form-group"><label for="mainList">Main List</label><input type="text" id="mainList" name="Main List" /></div>
-    <div class="form-group"><label for="segment">Segment</label><input type="text" id="segment" name="Segment" /></div>
-    <div class="form-group"><label for="count">Count (After Suppression)</label><input type="text" id="count" name="Count (After Suppression)" /></div>
-    <div class="form-group"><label for="campaignDate">Campaign Date</label><input type="date" id="campaignDate" name="Campaign Date" /></div>
-    <div class="form-group"><label for="campaignTime">Campaign Time</label><input type="time" id="campaignTime" name="Campaign Time" /></div>
-    <div class="form-group"><label for="testEmail">Test Email List/Person</label><input type="email" id="testEmail" name="Test Email List/Person" /></div><br>
-<div class="form-group" style="display: flex; align-items: center;"><label style="min-width: 420px;">Link Check</label><label style="margin-right: 10px;"><input type="radio" name="Link Check" value="Yes" /> Yes</label><label><input type="radio" name="Link Check" value="No" /> No</label></div><br>
-<div class="form-group" style="display: flex; align-items: center;"><label style="min-width: 420px;">Content Error Check</label><label style="margin-right: 10px;"><input type="radio" name="Content Error Check" value="Yes" /> Yes</label><label><input type="radio" name="Content Error Check" value="No" /> No</label></div>
-<div class="form-group" style="display: flex; align-items: center;"><label style="min-width: 420px;">Alt Tag Check</label><label style="margin-right: 10px;"><input type="radio" name="Alt Tag Check" value="Yes" /> Yes</label><label><input type="radio" name="Alt Tag Check" value="No" /> No</label></div>
+    <div class="form-group"><label for="mainList">Main List</label><input type="text" id="mainList" name="Main List"></div>
+    <div class="form-group"><label for="segment">Segment</label><input type="text" id="segment" name="Segment"></div>
+    <div class="form-group"><label for="count">Count (After Suppression)</label><input type="text" id="count" name="Count (After Suppression)"></div>
+    <div class="form-group"><label for="campaignDate">Campaign Date</label><input type="date" id="campaignDate" name="Campaign Date"></div>
+    <div class="form-group">
+      <label for="campaignTime">Campaign Time</label>
+      <input type="time" id="campaignTime" name="Campaign Time" required>
+    </div>
+    <div class="form-group">
+      <label for="campaignTimeZone">Campaign Time Zone</label>
+      <select id="campaignTimeZone" name="Campaign Time Zone" required>
+        <option value="America/Los_Angeles">PST</option>
+        <option value="America/Denver">MST</option>
+        <option value="America/Chicago">CST</option>
+        <option value="America/New_York">EST</option>
+      </select>
+    </div>
+    <div class="form-group"><label for="testEmail">Test Email List/Person</label><input type="text" id="testEmail" name="Test Email List/Person"></div>
 
-    <div class="form-group"><label for="promoCode">Promo Code?</label><input type="text" id="promoCode" name="Promo code?" /></div>
-	<div class="form-group" style="display: flex; align-items: center;"><label style="min-width: 420px;">CAN-SPAM Compliant</label><label style="margin-right: 10px;"><input type="radio" name="CAN-SPAM Compliant" value="Yes" /> Yes</label><label><input type="radio" name="CAN-SPAM Compliant" value="No" /> No</label></div>
-
-  <div class="form-group" style="display: flex; align-items: center;"><label style="min-width: 420px;">Unsubscribe Link</label><label style="margin-right: 10px;"><input type="radio" name="Unsubscribe Link" value="Yes" /> Yes</label><label><input type="radio" name="Unsubscribe Link" value="No" /> No</label></div>
-<div class="form-group" style="display: flex; align-items: center;"><label style="min-width: 420px;">Salutation (First Name)</label><label style="margin-right: 10px;"><input type="radio" name="Salutation(First Name)" value="Yes" /> Yes</label><label><input type="radio" name="Salutation(First Name)" value="No" /> No</label></div>
-
+    <!-- QA Checks as Dropdowns -->
+    <div class="form-group"><label for="linkCheck">Link Check</label><select id="linkCheck" name="Link Check"><option>Yes</option><option>No</option></select></div>
+    <div class="form-group"><label for="contentError">Content Error Check</label><select id="contentError" name="Content Error Check"><option>Yes</option><option>No</option></select></div>
+    <div class="form-group"><label for="altTag">Alt Tag Check</label><select id="altTag" name="Alt Tag Check"><option>Yes</option><option>No</option></select></div>
+    <div class="form-group"><label for="promoCode">Promo Code?</label><input type="text" id="promoCode" name="Promo code?"></div>
+    <div class="form-group"><label for="canSpam">CAN-SPAM Compliant</label><select id="canSpam" name="CAN-SPAM Compliant"><option>Yes</option><option>No</option></select></div>
+    <div class="form-group"><label for="unsubscribeLink">Unsubscribe Link</label><select id="unsubscribeLink" name="Unsubscribe Link"><option>Yes</option><option>No</option></select></div>
+    <div class="form-group"><label for="salutation">Salutation (First Name)</label><select id="salutation" name="Salutation(First Name)"><option>Yes</option><option>No</option></select></div>
     <div class="form-group"><label for="spf">SPF</label><select id="spf" name="SPF"><option>PASS</option><option>FAIL</option></select></div>
     <div class="form-group"><label for="dkim">DKIM</label><select id="dkim" name="DKIM"><option>PASS</option><option>FAIL</option></select></div>
     <div class="form-group"><label for="dmarc">DMARC</label><select id="dmarc" name="DMARC"><option>PASS</option><option>FAIL</option></select></div>
-<div class="form-group" style="display: flex; align-items: center;"><label style="min-width: 420px;">UTM Tracking?</label><label style="margin-right: 10px;"><input type="radio" name="UTM Tracking?" value="Yes" /> Yes</label><label><input type="radio" name="UTM Tracking?" value="No" /> No</label></div>
-    <div class="form-group"><label for="liveLink">Live Campaign Link</label><input type="text" id="liveLink" name="Live Campaign Link" /></div>
-    <div class="form-group"><label for="eoa">EOA</label><input type="text" id="eoa" name="EOA" /></div>
-    <div class="form-group"><label for="renderingIssues">Any Rendering Issues</label><textarea id="renderingIssues" name="Any Rendering Issues - Device Name + Platform"></textarea></div>
-<div class="form-group"><label for="approval">Campaign Approval</label><select id="approval" name="Campaign Approval"><option value="">-- Select Approval Status --</option><option value="Pending">Pending</option><option value="Approved">Approved</option></select></div>
-    <div class="form-group"><label for="links">LINKS (Title + Link)</label><textarea id="links" name="LINKS"></textarea></div>
+    <div class="form-group"><label for="utm">UTM Tracking?</label><select id="utm" name="UTM Tracking?"><option>Yes</option><option>No</option></select></div>
+    <div class="form-group"><label for="liveLink">Live Campaign Link</label><input type="text" id="liveLink" name="Live Campaign Link"></div>
+    <div class="form-group"><label for="eoa">EOA</label><input type="text" id="eoa" name="EOA"></div>
+    <div class="form-group"><label for="rendering">Any Rendering Issues - Device Name + Platform</label><input type="text" id="rendering" name="Any Rendering Issues - Device Name + Platform"></div>
 
-    <!-- Buttons -->
-    <button type="button" id="saveBtn">Save</button>
+    <div class="form-group"><label for="approval">Campaign Approval</label><select id="approval" name="Campaign Approval"><option>Approved</option><option>Not Approved</option></select></div>
+
+    <!-- Submit and Reset -->
     <button type="submit">Submit</button>
-    <p id="submissionIdDisplay"></p>
+    <button type="reset">Reset</button>
+    <div id="submissionIdDisplay">Your Submission ID: <span id="submissionIdValue"></span></div>
   </form>
 
-  <!-- Fetch/Edit Existing Entry -->
-  <form id="editForm" style="max-width: 900px; margin: auto;">
-    <div class="form-group">
-      <label for="searchResponseId">Enter Submission ID to Edit</label><br>
-      <input type="text" id="searchResponseId" /><br><br>
-      <button type="button" id="fetchDataBtn">Fetch Data</button>
-    </div>
-  </form>
-
-
-<script>
-  const scriptURL = 'https://script.google.com/macros/s/AKfycbylZD8BoXlufrjxxZoKaUidoWC7p5lGYSvE2653JVuojJZtU7NBlIPQWTnKFW7L2CwkyQ/exec';
-
-  document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('qaForm');
-
-    // Set Create Date and Submission Time (Default to CST)
-    const createDateField = document.getElementById("createDate");
-    const submissionTimeField = document.getElementById("submissionTime");
-
-    const setCSTDate = () => {
-      const cstDate = new Date().toLocaleString("en-US", { timeZone: "America/Chicago" });
-      createDateField.value = cstDate; // Set Create Date to CST
-      submissionTimeField.value = cstDate; // Set Submission Date to CST
-    }
-
-    setCSTDate(); // Set the default date and time in CST when the page loads
-
-    // Save and Submit
-    form.addEventListener('submit', e => handleSubmit(e, "submit"));
-    document.getElementById('saveBtn').addEventListener('click', e => handleSubmit(e, "save"));
-
-    // Handle form submit (either Save or Submit)
-    function handleSubmit(e, status) {
+  <script>
+    // Handle form submission
+    document.getElementById('qaForm').addEventListener('submit', function(e) {
       e.preventDefault();
-      
-      // Set the current time for submission time, adjusting to the selected campaign time zone
-      const campaignTimeField = document.getElementById('campaignTime');
+
+      // Get current CST time for Create Date and Submission Time
+      const cstTime = new Date().toLocaleString("en-US", { timeZone: "America/Chicago" });
+
+      // Set the default times
+      document.getElementById('createDate').value = cstTime;
+      document.getElementById('submissionTime').value = cstTime;
+
+      // Handle Campaign Time with Time Zone
+      const campaignTime = document.getElementById('campaignTime').value;
       const campaignTimeZone = document.getElementById('campaignTimeZone').value;
-      const campaignTime = convertToTimeZone(campaignTimeField.value, campaignTimeZone);
+      document.getElementById('submissionId').value = Date.now(); // You can use UUID generation as an alternative.
 
-      document.getElementById("submissionTime").value = new Date().toLocaleString("en-US", { timeZone: "America/Chicago" });
-
-      const formData = new FormData(form);
-      formData.append("Form Status", status);
-      formData.append("Campaign Time", `${campaignTime} ${campaignTimeZone}`);  // Append campaign time with time zone
-
-      fetch(scriptURL, { method: 'POST', body: formData })
-        .then(res => res.text())
-        .then(id => {
-          document.getElementById('submissionId').value = id;
-          document.getElementById('submissionIdDisplay').innerText = `Submission ID: ${id}`;
-          document.getElementById('submissionIdDisplay').style.display = 'block';
-          alert(`${status === 'save' ? 'Saved' : 'Submitted'} successfully!`);
-        })
-        .catch(err => alert("Error submitting form: " + err));
-    }
-
-    // Fetch existing entry based on Submission ID
-    document.getElementById('fetchDataBtn').addEventListener('click', () => {
-      const submissionId = document.getElementById('searchResponseId').value.trim();
-      if (!submissionId) {
-        alert('Please enter a Submission ID.');
-        return;
-      }
-
-      fetch(`${scriptURL}?action=get&id=${submissionId}`)
-        .then(response => response.json())
-        .then(data => {
-          if (data.status === 'success') {
-            // Fill the form fields with retrieved data
-            Object.keys(data.entry).forEach(key => {
-              const field = document.querySelector(`[name="${key}"]`);
-              if (field) {
-                if (field.type === 'checkbox') {
-                  field.checked = data.entry[key] === 'TRUE';
-                } else {
-                  field.value = data.entry[key];
-                }
-              }
-            });
-            document.getElementById('submissionIdDisplay').innerText = `Editing Submission ID: ${submissionId}`;
-            document.getElementById('submissionIdDisplay').style.display = 'block';
-            document.getElementById('submissionId').value = submissionId;
-          } else {
-            alert(`No entry found for Submission ID: ${submissionId}`);
-          }
-        })
-        .catch(err => alert("Failed to fetch data: " + err));
+      // Send data to Google Apps Script
+      const formData = new FormData(document.getElementById('qaForm'));
+      fetch('<YOUR_GOOGLE_SCRIPT_WEB_APP_URL>', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.text())
+      .then(submissionId => {
+        // Display Submission ID
+        document.getElementById('submissionIdValue').textContent = submissionId;
+        document.getElementById('submissionIdDisplay').style.display = 'block';
+      })
+      .catch(error => alert('Error submitting form: ' + error));
     });
-
-    // Time Zone Conversion Helper
-    function convertToTimeZone(dateStr, timeZone) {
-      const date = new Date(dateStr);
-      const options = { timeZone: timeZone, hour12: true };
-      return date.toLocaleString("en-US", options); // Convert to the selected time zone
-    }
-
-  });
-</script>
-
-
-
-
-
+  </script>
 </body>
 </html>
