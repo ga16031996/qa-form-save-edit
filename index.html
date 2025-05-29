@@ -47,7 +47,22 @@
     <div class="form-group"><label for="segment">Segment</label><input type="text" id="segment" name="Segment"></div>
     <div class="form-group"><label for="count">Count (After Suppression)</label><input type="text" id="count" name="Count (After Suppression)"></div>
     <div class="form-group"><label for="campaignDate">Campaign Date</label><input type="date" id="campaignDate" name="Campaign Date"></div>
-    <div class="form-group"><label for="campaignTime">Campaign Time</label><input type="time" id="campaignTime" name="Campaign Time"></div>
+
+    <!-- Combined Campaign Time and Time Zone -->
+    <div class="form-group">
+      <label for="campaignTime">Campaign Time</label>
+      <div style="display: flex; gap: 10px;">
+        <input type="time" id="campaignTime" name="Campaign Time" />
+        <select id="campaignTimeZone" name="Campaign Time Zone">
+          <option value="">-- Time Zone --</option>
+          <option value="PST">PST</option>
+          <option value="MST">MST</option>
+          <option value="CST">CST</option>
+          <option value="EST">EST</option>
+        </select>
+      </div>
+    </div>
+
     <div class="form-group"><label for="testEmail">Test Email List/Person</label><input type="text" id="testEmail" name="Test Email List/Person"></div>
 
     <!-- QA Checks as Dropdowns -->
@@ -64,27 +79,29 @@
     <div class="form-group"><label for="utm">UTM Tracking?</label><select id="utm" name="UTM Tracking?"><option>Yes</option><option>No</option></select></div>
     <div class="form-group"><label for="liveLink">Live Campaign Link</label><input type="text" id="liveLink" name="Live Campaign Link"></div>
     <div class="form-group"><label for="eoa">EOA</label><input type="text" id="eoa" name="EOA"></div>
-    <div class="form-group"><label for="renderingIssues">Any Rendering Issues</label><textarea id="renderingIssues" name="Any Rendering Issues - Device Name + Platform"></textarea></div>
-    <div class="form-group"><label for="approval">Campaign Approval</label><select id="approval" name="Campaign Approval"><option value=\"\">-- Select --</option><option>Pending</option><option>Approved</option></select></div>
-    <div class="form-group"><label for="links">LINKS (Title + Link)</label><textarea id="links" name="LINKS"></textarea></div>
+    <div class="form-group"><label for="rendering">Any Rendering Issues - Device Name + Platform</label><input type="text" id="rendering" name="Any Rendering Issues - Device Name + Platform"></div>
 
-    <!-- Buttons -->
-    <button type="button" id="saveBtn">Save</button>
-    <button type="submit">Submit</button>
-    <p id="submissionIdDisplay"></p>
-  </form>
+    <!-- Campaign Approval -->
+    <div class="form-group"><label for="campaignApproval">Campaign Approval</label><select id="campaignApproval" name="Campaign Approval"><option>Approved</option><option>Not Approved</option></select></div>
 
-  <!-- Fetch/Edit -->
-  <form id="editForm" style="max-width: 900px; margin: auto;">
+    <!-- Submit & Save Buttons -->
+    <div class="form-group" style="text-align: center;">
+      <button type="button" onclick="handleSubmit(event, 'save')">Save</button>
+      <button type="button" onclick="handleSubmit(event, 'submit')">Submit</button>
+    </div>
+<form id="editForm" style="max-width: 900px; margin: auto;">
     <div class="form-group">
       <label for="searchResponseId">Enter Submission ID to Edit</label><br>
       <input type="text" id="searchResponseId" /><br><br>
       <button type="button" id="fetchDataBtn">Fetch Data</button>
     </div>
   </form>
+    <!-- Submission ID Display -->
+    <div id="submissionIdDisplay">Submission ID: <span id="submissionIdDisplayText"></span></div>
+  </form>
 
-<script>
-  const scriptURL = 'https://script.google.com/macros/s/AKfycbylZD8BoXlufrjxxZoKaUidoWC7p5lGYSvE2653JVuojJZtU7NBlIPQWTnKFW7L2CwkyQ/exec';
+  <script>
+  const scriptURL = 'https://script.google.com/macros/s/AKfycbzn5R_R3jZl25SwaP617UyuufEd-EeSXIAuXLbjqWuNEzzkJHCRzcNlutDCIuxtLVBWUA/exec';
 
   function getUSTimeString(timeZone) {
     return new Date().toLocaleString("en-US", { timeZone: timeZone, hour12: true });
@@ -92,17 +109,28 @@
 
   document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('qaForm');
-    document.getElementById("createDate").value = getUSTimeString("America/Los_Angeles");
+    
+    // Initialize createDate with CST timezone
+    document.getElementById("createDate").value = getUSTimeString("America/Chicago");
 
     form.addEventListener('submit', e => handleSubmit(e, "submit"));
     document.getElementById('saveBtn').addEventListener('click', e => handleSubmit(e, "save"));
 
     function handleSubmit(e, status) {
       e.preventDefault();
-      document.getElementById("submissionTime").value = getUSTimeString("America/Los_Angeles");
 
+      // Set submissionTime to CST timezone
+      document.getElementById("submissionTime").value = getUSTimeString("America/Chicago");
+
+      // Combine Campaign Time and Time Zone into a single field
+      const campaignTime = document.getElementById('campaignTime').value;
+      const campaignTimeZone = document.getElementById('campaignTimeZone').value;
+      const campaignDateTime = (campaignTime && campaignTimeZone) ? `${campaignTime} ${campaignTimeZone}` : '';
+
+      // Add the combined Campaign Date and Time
       const formData = new FormData(form);
       formData.append("Form Status", status);
+      formData.set("Campaign Date and Time", campaignDateTime);
 
       fetch(scriptURL, { method: 'POST', body: formData })
         .then(res => res.text())
@@ -138,5 +166,6 @@
     });
   });
 </script>
+
 </body>
 </html>
