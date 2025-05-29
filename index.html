@@ -156,6 +156,7 @@
                 if (field.type === 'checkbox') {
                   field.checked = data.entry[key] === 'TRUE';
                 } else if (field.type === 'date' && key === "Campaign Date") {
+                  // Convert the campaign date to YYYY-MM-DD format
                   const dateVal = new Date(data.entry[key]);
                   if (!isNaN(dateVal)) {
                     field.value = dateVal.toISOString().split("T")[0]; // Format: YYYY-MM-DD
@@ -168,7 +169,7 @@
                       field.value = parsedTime;
                     }
                   } else {
-                    field.value = timeStr;
+                    field.value = timeStr;  // Directly set the time if it's already in a 24-hour format
                   }
                 } else {
                   field.value = data.entry[key];
@@ -198,6 +199,7 @@
     });
   });
 </script>
+
 
 
 
